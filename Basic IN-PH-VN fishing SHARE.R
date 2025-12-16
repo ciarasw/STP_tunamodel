@@ -46,7 +46,7 @@ names(speciesnames) = speciesorder
 
 
 #read in tuna parameters
-T_par = read.csv("code/LeMaRns/tuna_setupLeMaRns.csv")
+T_par = read.csv("tuna_setupLeMaRns.csv")
 T_par = T_par[,c("species_names",	"Linf",	"W_a",	"W_b",	"k",	"Lmat",	"a",	"b")]
 
 #food web --> no food web component to this work, so all 0
@@ -105,8 +105,6 @@ M1 <- calc_M1(nsc, sc_Linf, phi_min,
 prefs <- calc_prefs(pred_mu=-2.25, pred_sigma=0.5, wgt, sc_Linf)
 suit_M2 <- calc_suit_vect(nsc, nfish, sc_Linf, prefs, T_tau)
 
-
-# save.image(file = "code/Base_model_LHparams.RData")
 
 
 #calc Qs----
@@ -198,8 +196,7 @@ ggplot(va4m, aes(x=size, y=value))+
   geom_line(aes(colour=variable, linetype=variable), size=1.5)+
   scale_color_manual(values = c("orangered2", "gold2", "deepskyblue", "midnightblue", "#00a78e"))+
   labs(y = "Vulnerability", x = "Size (cm)")
-ggsave("figures/basemodel_vuln_by_gear.png", height = 7, width = 11, units = "in")
-ggsave("figures/basemodel_vuln_by_gear_pres.png", height = 4, width = 7, units = "in")
+ggsave("basemodel_vuln_by_gear.png", height = 7, width = 11, units = "in")
 
 
 head(va4m)
@@ -282,7 +279,7 @@ model_run <- run_LeMans(T_params, years=50, effort=effort_mat)
 #save base model long term equil biomasses
 base_model = model_run@N[,,600]
 # class(base_model)
-save(base_model, file = "code/base_model_N0.RData")
+save(base_model, file = "base_model_N0.RData")
 
 
 
@@ -425,7 +422,7 @@ ggplot(CPG_30m, aes(gear, catch, fill = species))+
   scale_fill_manual(values = colspecies)+
   scale_y_continuous(labels = scientific)+
   labs(y = "Catch (mt)")
-ggsave("figures/basemodel_catch_by_gear.png", height = 7, width = 9, units = "in")
+ggsave("basemodel_catch_by_gear.png", height = 7, width = 9, units = "in")
 
 ggplot(CPG_30m[which(CPG_30m$gear!="otherPS"),], aes(gear, catch, fill = species))+
   theme(axis.title.x = element_blank())+
@@ -434,7 +431,7 @@ ggplot(CPG_30m[which(CPG_30m$gear!="otherPS"),], aes(gear, catch, fill = species
   scale_y_continuous(labels = scientific)+
   # scale_y_break(c(1.5e5, 1.5e6))+
   labs(y = "Catch (mt)")
-ggsave("figures/basemodel_catch_by_gear_pres.png", height = 2.5, width = 9, units = "in")
+ggsave("basemodel_catch_by_gear_pres.png", height = 2.5, width = 9, units = "in")
 
 
 ggplot(CPG_30m, aes(species, catch, fill = gear))+
@@ -443,7 +440,7 @@ ggplot(CPG_30m, aes(species, catch, fill = gear))+
   scale_fill_manual(values = colgear)+
   scale_y_continuous(labels = scientific)+
   labs(y = "Catch (mt)")
-ggsave("figures/basemodel_catch_by_species.png", height = 7, width = 9, units = "in")
+ggsave("basemodel_catch_by_species.png", height = 7, width = 9, units = "in")
 
 
 ggplot(CPG_30m, aes(species, catch, fill = gear))+
@@ -453,7 +450,7 @@ ggplot(CPG_30m, aes(species, catch, fill = gear))+
   scale_fill_manual(values = colgear)+
   scale_y_continuous(labels = scientific)+
   labs(y = "Catch (mt)")
-ggsave("figures/basemodel_catch_by_species_facet.png", height = 7, width = 9, units = "in")
+ggsave("basemodel_catch_by_species_facet.png", height = 7, width = 9, units = "in")
 
 
 #compare to reality
@@ -489,7 +486,7 @@ ggplot(catches_gearsp_real_df, aes(gear, catches_gearsp_real, fill = species))+
   scale_fill_manual(values = colspecies)+
   scale_y_continuous(labels = scientific)+
   labs(y = "Real reported catches (mt)")
-ggsave("figures/real_catch_by_gear.png", height = 7, width = 9, units = "in")
+ggsave("real_catch_by_gear.png", height = 7, width = 9, units = "in")
 
 
 #sum "real" values for catch by sp and compare to catch from 2017
@@ -529,7 +526,7 @@ summ_sp[2,] =((CPG_30_spsum)/(c(sumS, sumY, sumB)))*100
 rownames(summ_sp)  = c("SSBvReal", "CatchvReal")
 summ_sp
 
-write.csv(summ_sp, "figures/basemodel_SSB_totalcatch_vreal_bysp.csv")
+write.csv(summ_sp, "basemodel_SSB_totalcatch_vreal_bysp.csv")
 
 
 #estimate fuel use----
@@ -545,7 +542,7 @@ fuel$fuelunit = ifelse(
 
 head(fuel)
 
-write.csv(fuel, "figures/basemodel_fuel.csv")
+write.csv(fuel, "basemodel_fuel.csv")
 
 
 #economics----
@@ -599,13 +596,13 @@ tuna_econ$profit = tuna_econ$exvesselprice - tuna_econ$totalcost
 tuna_econ  = tuna_econ[,-5]
 tuna_econ$gear = factor(tuna_econ$gear, levels = gearorder)
 
-write.csv(tuna_econ, "figures/basemodel_modeloutput_tuna_econ.csv")
+write.csv(tuna_econ, "basemodel_modeloutput_tuna_econ.csv")
 
 ggplot(tuna_econ, aes(gear, profit))+
   theme(axis.title.x = element_blank())+
   geom_col()+
   labs(y = "Rent (USD)")
-ggsave("figures/basemodel_profit_by_gear.png", height = 7, width = 9, units = "in")
+ggsave("basemodel_profit_by_gear.png", height = 7, width = 9, units = "in")
 
 #by country
 econ_IN = colSums(tuna_econ[1:5,-1])
@@ -618,6 +615,7 @@ econ_other = colSums(tuna_econ[6:7,-1])
 # econ_other$country = "other"
 
 econ_bycountry = as.data.frame(rbind(econ_IN, econ_PH, econ_VN, econ_other))
-write.csv(econ_bycountry, "figures/basemodel_modeloutput_tuna_econ_countrysum.csv")
+write.csv(econ_bycountry, "basemodel_modeloutput_tuna_econ_countrysum.csv")
+
 
 
